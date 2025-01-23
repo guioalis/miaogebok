@@ -1,0 +1,76 @@
+datasource db {
+  provider = "mongodb"
+  url      = env.DATABASE_URL
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model Post {
+  id          String    @id @default(auto()) @map("_id") @db.ObjectId
+  title       String
+  content     String
+  excerpt     String
+  slug        String    @unique
+  published   Boolean   @default(false)
+  category    Category  @relation(fields: [categoryId], references: [id])
+  categoryId  String    @db.ObjectId
+  author      User      @relation(fields: [authorId], references: [id])
+  authorId    String    @db.ObjectId
+  tags        Tag[]     @relation(fields: [tagIds], references: [id])
+  tagIds      String[]  @db.ObjectId
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+  comments    Comment[]
+  views       Int       @default(0)
+  likes       Int       @default(0)
+  readTime    Int       // 预计阅读时间（分钟）
+}
+
+model Category {
+  id          String    @id @default(auto()) @map("_id") @db.ObjectId
+  name        String    @unique
+  description String?
+  posts       Post[]
+  createdAt   DateTime  @default(now())
+}
+
+model Tag {
+  id          String    @id @default(auto()) @map("_id") @db.ObjectId
+  name        String    @unique
+  posts       Post[]    @relation(fields: [postIds], references: [id])
+  postIds     String[]  @db.ObjectId
+  createdAt   DateTime  @default(now())
+}
+
+model User {
+  id          String    @id @default(auto()) @map("_id") @db.ObjectId
+  email       String    @unique
+  name        String?
+  avatar      String?
+  bio         String?
+  role        Role      @default(USER)
+  posts       Post[]
+  comments    Comment[]
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+}
+
+model Comment {
+  id          String    @id @default(auto()) @map("_id") @db.ObjectId
+  content     String
+  post        Post      @relation(fields: [postId], references: [id])
+  postId      String    @db.ObjectId
+  author      User      @relation(fields: [authorId], references: [id])
+  authorId    String    @db.ObjectId
+  parentId    String?   @db.ObjectId  // 用于回复功能
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+}
+
+enum Role {
+  USER
+  ADMIN
+  EDITOR
+} 
