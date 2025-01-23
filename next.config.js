@@ -14,6 +14,9 @@ const nextConfig = {
   // 环境变量配置
   env: {
     DATABASE_URL: process.env.DATABASE_URL,
+    NEXT_PUBLIC_SITE_URL: process.env.VERCEL_URL 
+      ? `https://${process.env.VERCEL_URL}`
+      : 'http://localhost:3000',
   }
 }
 
