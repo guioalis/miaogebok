@@ -11,6 +11,6 @@
     }
   ],
   "env": {
-    "DATABASE_URL": "@database_url"
+    "DATABASE_URL": "mongodb+srv://8201072:<nO5fmY5McP35H30R>@cluster0.ggvbx.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0"
   }
 } 
